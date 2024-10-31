@@ -1,105 +1,55 @@
-# Pipex
+
+# pipex
 
 ## Description
 
-**Pipex** is a project designed to deepen understanding of UNIX pipes by creating a program that replicates the functionality of shell piping. The program takes two commands and redirects the output of the first command to the input of the second, simulating the behavior of the shell command `cmd1 | cmd2`.
-
----
+**pipex** is a C program that emulates the Unix pipe `|` operation, allowing for the redirection of output from one command as input to another. This project was developed as part of the École 42 curriculum to practice file descriptor management, process creation, and pipe handling in a Unix-based environment.
 
 ## Features
 
-### Mandatory Part
-
-The `pipex` program should be executed as follows:
-
-    ./pipex file1 cmd1 cmd2 file2
-
-- **Arguments**:
-  - `file1`: The input file.
-  - `cmd1`: The first shell command with its parameters.
-  - `cmd2`: The second shell command with its parameters.
-  - `file2`: The output file.
-
-- **Behavior**: The program should mimic the shell command:
-
-      < file1 cmd1 | cmd2 > file2
-
-  For example:
-
-      ./pipex infile "ls -l" "wc -l" outfile
-
-  This should behave like:
-
-      < infile ls -l | wc -l > outfile
-
-- **Requirements**:
-  - The program must handle errors and exit gracefully without memory leaks.
-  - It must use UNIX functions such as `open`, `close`, `read`, `write`, `malloc`, `free`, `perror`, `strerror`, `access`, `dup`, `dup2`, `execve`, `exit`, `fork`, `pipe`, `unlink`, `wait`, and `waitpid`.
-  - The Makefile should include rules for `all`, `clean`, `fclean`, and `re` targets, and it should not relink.
-
-### Bonus Part (Optional)
-
-Additional features for extra points:
-
-- **Multiple Pipes**: The program can handle multiple commands, with each command’s output piped to the next. For example:
-
-      ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2
-
-  This should behave like:
-
-      < file1 cmd1 | cmd2 | cmd3 ... | cmdn > file2
-
-- **Here Document Mode**: The program supports `<<` and `>>` when the first parameter is `"here_doc"`. For example:
-
-      ./pipex here_doc LIMITER cmd cmd1 file
-
-  This should behave like:
-
-      cmd << LIMITER | cmd1 >> file
-
-> **Note**: The bonus part will only be evaluated if the mandatory part is fully completed and functions without errors.
-
----
+- Simulates the behavior of the Unix pipe `|` to link outputs and inputs of commands.
+- Executes two commands sequentially, redirecting the output of the first command as input to the second.
+- Manages file redirection for input and output.
+- Includes error handling for invalid commands, inaccessible files, and system calls.
 
 ## Compilation and Usage
 
-Compile the program using the provided Makefile:
+To compile `pipex`, use the provided Makefile by running:
 
-    make
-
-Run the program with the specified arguments:
-
-    ./pipex file1 cmd1 cmd2 file2
-
----
+```bash
+make
+```
 
 ## Project Structure
 
-- **src/**: Contains the source files (`.c` files).
-- **include/**: Contains the header files (`*.h`).
-- **Makefile**: Used for compiling the main program and bonus features.
-
----
+- **pipex.h**: Contains the structure `t_pipex` for managing pipes and file descriptors, and function prototypes.
+- **pipex.c**: Main program that sets up pipes, processes commands, and manages forking of child processes.
+- **utils.c**: Provides utility functions including `command`, `error_msg`, `close_pipe`, `child_proccess1`, and `child_proccess2` for command execution and pipe handling.
+- **libft/**: Directory containing custom helper functions like `ft_split`, `ft_strdup`, and `ft_strjoin`.
+- **Makefile**: Manages compilation of the program.
 
 ## How to Use
 
-1. **Basic Command**:
-   - To redirect output of one command to another using files:
-     
-         ./pipex infile "grep hello" "wc -l" outfile
+Once compiled, run the `pipex` program with the following format:
 
-2. **Multiple Pipes (Bonus)**:
-   - Chain multiple commands:
-     
-         ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2
+```bash
+./pipex infile "cmd1" "cmd2" outfile
+```
 
-3. **Here Document Mode (Bonus)**:
-   - To use here-doc with a limiter and append output:
-     
-         ./pipex here_doc LIMITER "cat" "wc -l" outfile
+- **infile**: The file from which the first command will read input.
+- **cmd1**: The first command to execute.
+- **cmd2**: The second command to execute, using the output from cmd1.
+- **outfile**: The file where the output from cmd2 will be written.
 
----
+### Example
+
+```bash
+./pipex infile "ls -l" "grep pipex" outfile
+```
+
+In this example, `pipex` will execute `ls -l`, filter the output through `grep pipex`, and write the result to `outfile`.
 
 ## Author
 
 Project developed by [Malik](https://github.com/ma1iik) as part of the École 42 curriculum.
+
